@@ -1,5 +1,117 @@
-tmp/*
-config/database.php
-app/tmp/*
-app/config/database.php
-!empty
+<!--calculo.php -->
+<html>
+<head>
+  <title>Calculo de vencimiento</title>
+</head>
+
+<body>
+	<?php
+	function validar_campo($campo, $texto)
+	{
+		echo "<tr>\n";
+        echo "<td>$texto</td>\n";
+		if (empty($campo))
+		  echo "<td><font color='red'>Falta</font></td>\n";
+		else 
+			echo "<td>$campo</td\n";
+		echo "<tr\n";
+	}
+	
+		
+		//se recuperan en variables los datos enviados por el formulario
+		$importe = $_POST["importe"];
+		$entrada = $_POST['entrada'];
+		$numero_pagos = $_POST["numero_pagos"];
+		$fecha1 = $_POST['fecha1'];
+		
+		//Primero se comprueba que las variables no esten vacias.Si hay
+		//alguna que no tiene datos, se muestra una pagina de error
+		//que indica los campos que faltan pao completar
+		if ((empty ($importe)) || (empty($entrada)) ||
+		(empty($numero_pagos)) || (empty($fecha1)) ||
+		(strtotime($fecha1) == -1))
+		{
+	
+			
+	?>
+	<center>
+		<h1>Faltan datos de entrada</h1>
+		<hr />
+		<table>
+			<?php
+			validar_campo($importe, 'Importe');
+			validar_campo($entrada, 'Entrada');
+			validar_campo($numero_pagos, 'Numero de Pagos');
+			validar_campo($fecha1, 'Primer Vencimiento');
+			?>
+			<tr>
+			<tr>
+			<td colspan='2' align='center'>
+            <a href="vencimiento.html">Volver</a></td>
+            </tr>
+            </table>
+            <?php
+            }
+            
+		else 
+			
+		
+      {
+ 	?>
+	
+	<center>
+		<h1> descripcion de vencimientos</h1>
+		<hr />
+		<table border="3">
+			<tr>
+				<th>Numero de pago</th>
+				<th>Importe de vencimiento</th>
+				<th>Restante</th>
+				<th>Fecha</th>
+				
+		<tr>
+			<?php
+			//Se calcula la cantidad que falta por pagar
+			$resto = $importe - $entrada;
+			
+			//Se calcula el importe de las amortizaciones restantes
+			$amortizacion = $resto / $numero_pagos;
+			
+			//Se obtiene la fecha del primer pago
+			$fecha_inicio = strtotime($fecha1);
+			
+			//Se escribe la fila de la tabla html con los valores de la entrada
+			echo "<tr>\n";
+			echo "<td align = 'center'> Entrada</td>\n";
+			echo "td align ='right'>$entrada</td>\n";
+			echo "td align = 'right>$resto</td>\n";
+			echo "td align = 'right>",strftime("%d/%b/%Y"), "</td>\n";
+			echo "</tr>\n";
+			
+			//se escriben las filas de la tabla html con los valores
+			//de cada uno d los pagos
+			for ($i = 1;$i <= $numero_pagos; $i++)
+			{
+				//Se obtiene lo que falta pagar
+				$resto = $resto - $amortizacion;
+				echo "<td.\n";
+				echo "<td align= 'center'> $i</td>\n";
+				echo "td align = 'right'>$amortizacion</td>\n";
+				echo "td align = 'right'>$resto</td>\n";
+				echo "<td align = 'right'>",strftime("%d/%b/%Y",
+				strtotime("$i months", $fecha_inicio)), "</td>\n";
+				echo "</tr>\n";
+			}
+				?>
+			</table>
+			<a href = "vencimiento.html">Volver</a></td>
+			<?php
+			}
+?>
+</center>
+
+			
+	</center>
+	
+</body>
+</html>
